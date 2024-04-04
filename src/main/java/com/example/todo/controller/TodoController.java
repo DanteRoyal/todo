@@ -1,4 +1,4 @@
-package com.example.todo;
+package com.example.todo.controller;
 
 import java.util.List;
 
@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.todo.domain.Todo;
+import com.example.todo.service.TodoService;
 
 import lombok.RequiredArgsConstructor;
 

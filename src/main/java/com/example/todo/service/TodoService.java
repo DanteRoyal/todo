@@ -1,8 +1,11 @@
-package com.example.todo;
+package com.example.todo.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import com.example.todo.domain.Todo;
+import com.example.todo.repository.TodoRepository;
 
 import lombok.RequiredArgsConstructor;
 
