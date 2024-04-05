@@ -1,41 +1,71 @@
 package com.example.todo.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todo.domain.Todo;
 import com.example.todo.repository.TodoRepository;
+import com.example.todo.request.TodoRequest;
+import com.example.todo.response.TodoResponse;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class TodoService {
 
 	private final TodoRepository todoRepository;
 
-	public final List<Todo> findAll() {
-		return todoRepository.findAll();
+	public void saveTodo(final TodoRequest request) {
+		Todo todo = Todo.builder()
+			.title(request.getTitle())
+			.content(request.getContent())
+			.completed(false)
+			.build();
+
+		todoRepository.save(todo);
 	}
 
-	public Todo findById(Long id) {
-		return todoRepository.findById(id).orElseThrow();
+	public TodoResponse findTodoById(final Long id) {
+		Todo todo = todoRepository.findById(id).orElseThrow(() -> new RuntimeException("못찾음"));
+
+		return TodoResponse.builder()
+			.id(todo.getId())
+			.title(todo.getTitle())
+			.content(todo.getContent())
+			.completed(todo.isCompleted())
+			.build();
 	}
 
-	public Todo save(Todo todo) {
-		return todoRepository.save(todo);
+	public final List<TodoResponse> findAllTodos() {
+		return todoRepository.findAll().stream()
+			.map(todo -> new TodoResponse(todo.getId(), todo.getTitle(), todo.getContent(), todo.isCompleted()))
+			.collect(Collectors.toList());
+
+	}
+	@Transactional
+	public TodoResponse updateTodo(final Long id, final TodoRequest request) {
+		Todo todo = todoRepository.findById(id)
+			.orElseThrow(() -> new RuntimeException("못찾음"));
+
+		todo.update(request.getTitle(), request.getContent(), request.isCompleted());
+
+		return TodoResponse.builder()
+			.id(todo.getId())
+			.title(todo.getTitle())
+			.content(todo.getContent())
+			.completed(todo.isCompleted())
+			.build();
 	}
 
-	public Todo updateTodo(Long id, Todo toDoDetails) {
-		Todo todo = findById(id);
-		todo.setDescription(toDoDetails.getDescription());
-		todo.setTitle(toDoDetails.getTitle());
-		todo.setCompleted(toDoDetails.isCompleted());
-		return todoRepository.save(todo);
-	}
+	public void deleteTodo(final Long id) {
+		Todo todo = todoRepository.findById(id)
+			.orElseThrow(() -> new RuntimeException("못찾음"));
 
-	public void deleteTodo(Long id) {
-		todoRepository.deleteById(id);
+		todoRepository.delete(todo);
 	}
 }

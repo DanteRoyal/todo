@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Todo {
 
 	@Id
@@ -24,9 +23,14 @@ public class Todo {
 
 	private String title;
 
-	private String description;
+	private String content;
 
 	private boolean completed;
 
+	public void update(final String title, final String content, final boolean completed) {
+		this.title = title;
+		this.content = content;
+		this.completed = completed;
+	}
 
 }
