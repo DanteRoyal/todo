@@ -41,7 +41,7 @@ public class TodoService {
 			.build();
 	}
 
-	public final List<TodoResponse> findAllTodos() {
+	public List<TodoResponse> findAllTodos() {
 		return todoRepository.findAll().stream()
 			.map(todo -> new TodoResponse(todo.getId(), todo.getTitle(), todo.getContent(), todo.isCompleted()))
 			.collect(Collectors.toList());
